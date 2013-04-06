@@ -10,8 +10,8 @@
 </head>
 <body>
 
-
-<button class="button addNewButton" data-bind="click: $root.addFruit">Add a new fruit</button>
+<div class="content">
+<button class="button addNewButton" data-bind="click: $root.addItem">Add a new fruit</button>
 <hr />
     <ul data-bind="foreach: items">
         <li>
@@ -27,14 +27,18 @@
             <label class="read" data-bind="text: colour, visible: !$root.isItemEditing($data)" />
 
         </li>
-        <li>
-            <a class="button toolButton" href="#" data-bind="click: $root.editFruit.bind($root), visible: !$root.isItemEditing($data)">Edit</a>
-            <a class="button toolButton" href="#" data-bind="click: $root.removeFruit.bind($root), visible: !$root.isItemEditing($data)">Remove</a>
-            <a class="button toolButton" href="#" data-bind="click: $root.applyFruit.bind($root), visible: $root.isItemEditing($data)">Apply</a>
-            <a class="button toolButton" href="#" data-bind="click: $root.cancelEdit.bind($root), visible: $root.isItemEditing($data)">Cancel</a>
+        <li class="css-behaviour">
+            <a class="toolButton" href="#" data-bind="click: $root.removeItem.bind($root), text: behaviour">Remove</a>
         </li>
+        <li class="css-tool">
+            <a class="button toolButton" href="#" data-bind="click: $root.removeItem.bind($root), visible: !$root.isItemEditing($data)">Remove</a>
+            <a class="button toolButton" href="#" data-bind="click: $root.editItem.bind($root), visible: !$root.isItemEditing($data)">Edit | </a>
+            <a class="button toolButton" href="#" data-bind="click: $root.cancelEdit.bind($root), visible: $root.isItemEditing($data)">Cancel</a>
+            <a class="button toolButton" href="#" data-bind="click: $root.applyItem.bind($root), visible: $root.isItemEditing($data)">Apply | </a>
+        </li>
+        <hr>
     </ul>
-
+</div>
 
 
 </body>
