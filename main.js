@@ -1,6 +1,3 @@
-/*----------------------------------------------------------------------*/
-/* Observable Extention for Editing
- /*----------------------------------------------------------------------*/
 ko.observable.fn.beginEdit = function (transaction) {
 
     var self = this;
@@ -47,19 +44,18 @@ ko.observable.fn.beginEdit = function (transaction) {
     return self;
 }
 
-/*----------------------------------------------------------------------*/
-/* Item Model
- /*----------------------------------------------------------------------*/
 
-function Fruit( name, colour) {
+function Item( name, desc, colour) {
     var self = this;
     self.name = ko.observable(name);
     self.colour = ko.observable(colour);
+    self.desc = ko.observable(desc);
 };
 
-Fruit.prototype.beginEdit = function(transaction) {
+Item.prototype.beginEdit = function(transaction) {
     this.name.beginEdit(transaction);
     this.colour.beginEdit(transaction);
+    this.desc.beginEdit(transaction);
 }
 
 
@@ -71,46 +67,46 @@ function FruitColourViewModel() {
 
     //  data
     self.availableColours = [];
-    self.fruits = ko.observableArray([]);
+    self.items = ko.observableArray([]);
     self.editingItem = ko.observable();
 
     //  create the transaction for commit and reject
     self.editTransaction = new ko.subscribable();
 
     //  helpers
-    self.isItemEditing = function(fruit) {
-        return fruit == self.editingItem();
+    self.isItemEditing = function(item) {
+        return item == self.editingItem();
     };
 
     //  behaviour
     self.addFruit = function () {
-        var fruit = new Fruit("New fruit", self.availableColours[0]);
-        self.fruits.push(fruit);
+        var item = new Item("New item","write your desc", self.availableColours[0]);
+        self.items.push(item);
 
         //  begin editing the new item straight away
-        self.editFruit(fruit);
+        self.editFruit(item);
     };
 
-    self.removeFruit = function (fruit) {
+    self.removeFruit = function (item) {
         if (self.editingItem() == null) {
-            var answer = true; // confirm('Are you sure you want to delete this fruit? ' + fruit.name());
+            var answer = true; // confirm('Are you sure you want to delete this item? ' + item.name());
             if (answer) {
-                self.fruits.remove(fruit)
+                self.items.remove(item)
             }
         }
     };
 
-    self.editFruit = function (fruit) {
+    self.editFruit = function (item) {
         if (self.editingItem() == null) {
             // start the transaction
-            fruit.beginEdit(self.editTransaction);
+            item.beginEdit(self.editTransaction);
 
             // shows the edit fields
-            self.editingItem(fruit);
+            self.editingItem(item);
         }
     };
 
-    self.applyFruit = function (fruit) {
+    self.applyFruit = function (item) {
         //  commit the edit transaction
         self.editTransaction.notifySubscribers(null, "commit");
 
@@ -118,7 +114,7 @@ function FruitColourViewModel() {
         self.editingItem(null);
     };
 
-    self.cancelEdit = function (fruit) {
+    self.cancelEdit = function (item) {
         //  reject the edit transaction
         self.editTransaction.notifySubscribers(null, "rollback");
 
@@ -128,27 +124,21 @@ function FruitColourViewModel() {
 
 }
 
-/*----------------------------------------------------------------------*/
-/* KO Page Binding                                                      */
-/*----------------------------------------------------------------------*/
 $(document).ready(function() {
-
-    //  create the model
+    
     var model = new FruitColourViewModel();
     model.availableColours = ["Blue", "Green", "Orange", "Red", "Yellow"];
 
     var initData = [
-        new Fruit( "Apple", "Green"),
-        new Fruit( "Banana", "Yellow"),
-        new Fruit( "Orange", "Orange"),
-        new Fruit( "Strawberry", "Red")
+        new Item( "Apple","asdasd", "Green"),
+        new Item( "Banana","asdasd",  "Yellow"),
+        new Item( "Orange", "asdasd", "Orange"),
+        new Item( "Strawberry", "asdasd", "Red")
     ];
 
-    model.fruits(initData);
+    model.items(initData);
 
-    //  bind model to the html
     ko.applyBindings( model );
-
 });
 
 
